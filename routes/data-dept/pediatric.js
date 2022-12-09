@@ -7,15 +7,27 @@ router.get("/", (req, res) => {
     res.send(`Pediatric Systems`)
 
 });
+router.get("/get-pedia-record", async (req, res) => {
 
+    try {
+        const user = await pool.query(`INSERT INTO public."Pediatric_record"(
+             date_created, patient,program)
+            VALUES (CURRENT_TIMESTAMP,$1,$2) returning *`, []);
+
+        res.send(user.rows)
+    } catch (error) {
+        return res.status(405).json("Error")
+    }
+});
 router.post("/add-pedia-record", async (req, res) => {
     const {
         patient,
+        program,
     } = req.body;
     try {
         const user = await pool.query(`INSERT INTO public."Pediatric_record"(
-             date_created, patient)
-            VALUES (CURRENT_TIMESTAMP,$1) returning *`, [patient]);
+             date_created, patient,program)
+            VALUES (CURRENT_TIMESTAMP,$1,$2) returning *`, [patient, program]);
 
         res.send(user.rows)
     } catch (error) {
@@ -159,11 +171,12 @@ router.delete("/delete-vac/:id", async (req, res) => {
         return res.status(405).json("Error")
     }
 });
-router.get("/get-program/", async (req, res) => {
+router.get("/get-program/", async (req, res) => {//
 
     try {
-        const user = await pool.query(`SELECT vax_prog_id, prog_name, prog_start, prog_end, barangay
-        FROM public.vax_program;
+        const user = await pool.query(`SELECT pedia_id, date_created, patient, n.prog_name
+        FROM public."Pediatric_record" p
+        LEFT OUTER JOIN public."vax_program" n on n.vax_prog_id = p.program;
         `,);
 
         res.send(user.rows)
@@ -171,7 +184,7 @@ router.get("/get-program/", async (req, res) => {
         return res.status(405).json("Error")
     }
 });
-router.get("/get-program/:id", async (req, res) => {
+router.get("/get-program/:id", async (req, res) => {//
 
     try {
         const user = await pool.query(`SELECT vax_prog_id, prog_name, prog_start, prog_end, barangay
@@ -184,7 +197,7 @@ router.get("/get-program/:id", async (req, res) => {
         return res.status(405).json("Error")
     }
 });
-router.post("/add-program/", async (req, res) => {
+router.post("/add-program/", async (req, res) => {//
     const {
         prog_name, prog_start, prog_end, barangay
     } = req.body;
@@ -199,7 +212,7 @@ router.post("/add-program/", async (req, res) => {
         return res.status(405).json(error.message)
     }
 });
-router.put("/edit-program/:id", async (req, res) => {
+router.put("/edit-program/:id", async (req, res) => {//
     const {
         prog_name, prog_start, prog_end, barangay
     } = req.body;
@@ -214,7 +227,7 @@ router.put("/edit-program/:id", async (req, res) => {
         return res.status(405).json("Error")
     }
 });
-router.delete("/delete-program/:id", async (req, res) => {
+router.delete("/delete-program/:id", async (req, res) => {//
     const {
         prog_name, prog_start, prog_end, barangay
     } = req.body;
