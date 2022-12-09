@@ -159,7 +159,7 @@ router.delete("/delete-vac/:id", async (req, res) => {
         return res.status(405).json("Error")
     }
 });
-router.post("/get-program/", async (req, res) => {
+router.get("/get-program/", async (req, res) => {
 
     try {
         const user = await pool.query(`SELECT vax_prog_id, prog_name, prog_start, prog_end, barangay
@@ -171,7 +171,7 @@ router.post("/get-program/", async (req, res) => {
         return res.status(405).json("Error")
     }
 });
-router.post("/get-program/:id", async (req, res) => {
+router.get("/get-program/:id", async (req, res) => {
 
     try {
         const user = await pool.query(`SELECT vax_prog_id, prog_name, prog_start, prog_end, barangay
@@ -196,7 +196,7 @@ router.post("/add-program/", async (req, res) => {
 
         res.send(user.rows)
     } catch (error) {
-        return res.status(405).json("Error")
+        return res.status(405).json(error.message)
     }
 });
 router.put("/edit-program/:id", async (req, res) => {
