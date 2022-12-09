@@ -11,7 +11,7 @@ router.post("/add-patient", async (req, res) => {
     const {
         first_name,
         last_name,
-        age,
+        birth_date,
         sex,
         mother_name,
         father_name,
@@ -25,8 +25,8 @@ router.post("/add-patient", async (req, res) => {
     } = req.body;
     try {
         const user = await pool.query(`INSERT INTO public."Patient"(
-            first_name, last_name, age, sex, mother_name, father_name, contact_number, email)
-           VALUES ( $1, $2, $3, $4, $5, $6, $7, $8) returning *`, [first_name, last_name, age, sex, mother_name, father_name, contact_number, email]);
+            first_name, last_name, birth_date, sex, mother_name, father_name, contact_number, email)
+           VALUES ( $1, $2, $3, $4, $5, $6, $7, $8) returning *`, [first_name, last_name, birth_date, sex, mother_name, father_name, contact_number, email]);
 
         const patient_id = user.rows[0].patient_id
 
