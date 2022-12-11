@@ -174,7 +174,7 @@ router.delete("/delete-vac/:id", async (req, res) => {
 router.get("/get-program/", async (req, res) => {//
 
     try {
-        const user = await pool.query(`SELECT pedia_id, date_created, patient, n.prog_name
+        const user = await pool.query(`SELECT pedia_id, date_created, patient, n.prog_name, proj_name
         FROM public."Pediatric_record" p
         LEFT OUTER JOIN public."vax_program" n on n.vax_prog_id = p.program;
         `,);
@@ -187,7 +187,7 @@ router.get("/get-program/", async (req, res) => {//
 router.get("/get-program/:id", async (req, res) => {//
 
     try {
-        const user = await pool.query(`SELECT vax_prog_id, prog_name, prog_start, prog_end, barangay
+        const user = await pool.query(`SELECT vax_prog_id, prog_name, prog_start, prog_end, barangay, proj_name
         FROM public.vax_program
         where vax_prog_id=$1;
         `, [req.params.id]);
@@ -199,13 +199,13 @@ router.get("/get-program/:id", async (req, res) => {//
 });
 router.post("/add-program/", async (req, res) => {//
     const {
-        prog_name, prog_start, prog_end, barangay
+        prog_name, prog_start, prog_end, barangay, proj_name
     } = req.body;
     try {
         const user = await pool.query(`INSERT INTO public.vax_program(
-             prog_name, prog_start, prog_end, barangay)
-            VALUES ( $1, $2, $3, $4)
-        `, [prog_name, prog_start, prog_end, barangay]);
+             prog_name, prog_start, prog_end, barangay, proj_name)
+            VALUES ( $1, $2, $3, $4, $5)
+        `, [prog_name, prog_start, prog_end, barangay, proj_name]);
 
         res.send(user.rows)
     } catch (error) {
@@ -214,13 +214,13 @@ router.post("/add-program/", async (req, res) => {//
 });
 router.put("/edit-program/:id", async (req, res) => {//
     const {
-        prog_name, prog_start, prog_end, barangay
+        prog_name, prog_start, prog_end, barangay, proj_name
     } = req.body;
     try {
         const user = await pool.query(`UPDATE public.vax_program
-        SET prog_name=$2, prog_start=$3, prog_end=$4, barangay=$5
+        SET prog_name=$2, prog_start=$3, prog_end=$4, barangay=$5, proj_name=$6
         WHERE vax_prog_id=$1;
-        `, [req.params.id, prog_name, prog_start, prog_end, barangay]);
+        `, [req.params.id, prog_name, prog_start, prog_end, barangay, proj_name]);
 
         res.send(user.rows)
     } catch (error) {
@@ -228,9 +228,7 @@ router.put("/edit-program/:id", async (req, res) => {//
     }
 });
 router.delete("/delete-program/:id", async (req, res) => {//
-    const {
-        prog_name, prog_start, prog_end, barangay
-    } = req.body;
+
     try {
         const user = await pool.query(`DELETE FROM public.vax_program
         WHERE vax_prog_id=$1;
