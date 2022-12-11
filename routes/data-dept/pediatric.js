@@ -113,7 +113,8 @@ router.get("/get-vac/:id", async (req, res) => {
 
     try {
         const user = await pool.query(`SELECT vac_id, vac_name, vac_desc, vac_remarks
-        FROM public."Vaccination";
+        FROM public."Vaccination"
+        where vac_id =$1 ;
         `, [req.params.id]);
 
         res.send(user.rows)
