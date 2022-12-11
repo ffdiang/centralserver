@@ -10,13 +10,14 @@ router.get("/", (req, res) => {
 router.get("/get-pedia-record", async (req, res) => {
 
     try {
-        const user = await pool.query(`INSERT INTO public."Pediatric_record"(
-             date_created, patient,program)
-            VALUES (CURRENT_TIMESTAMP,$1,$2) returning *`, []);
+        const user = await pool.query(`SELECT pedia_id, date_created, t.first_name, t.last_name, n.prog_name, n.proj_name
+        FROM public."Pediatric_record" p
+        LEFT OUTER JOIN public."vax_program" n on n.vax_prog_id = p.program
+        LEFT OUTER JOIN public."Patient" t on t.patient_id = p.patient;`, []);
 
         res.send(user.rows)
     } catch (error) {
-        return res.status(405).json("Error")
+        return res.status(405).json(error.message)
     }
 });
 router.post("/add-pedia-record", async (req, res) => {
@@ -174,9 +175,8 @@ router.delete("/delete-vac/:id", async (req, res) => {
 router.get("/get-program/", async (req, res) => {//
 
     try {
-        const user = await pool.query(`SELECT pedia_id, date_created, patient, n.prog_name, proj_name
-        FROM public."Pediatric_record" p
-        LEFT OUTER JOIN public."vax_program" n on n.vax_prog_id = p.program;
+        const user = await pool.query(`SELECT vax_prog_id, prog_name, prog_start, prog_end, barangay, proj_name
+        FROM public.vax_program
         `,);
 
         res.send(user.rows)
