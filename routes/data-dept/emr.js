@@ -58,7 +58,7 @@ router.get("/patient/:id", async (req, res) => {
         return res.status(405).json("Error")
     }
 
-
+    
 
 });
 
