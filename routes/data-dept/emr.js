@@ -75,7 +75,7 @@ router.get("/patients/", async (req, res) => {
 
         res.json(patient.rows)
     } catch (error) {
-        return res.status(405).json("Error")
+        return res.status(405).json(error.message)
     }
 
 
