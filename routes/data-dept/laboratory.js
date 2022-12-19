@@ -371,11 +371,11 @@ router.put("/edit-fecal/:id", async (req, res) => {
         return res.status(405).json(error.message)
     }
 });
-router.delete("/delete-hema/:id", async (req, res) => {
+router.delete("/delete-fecal/:id", async (req, res) => {
 
     try {
-        const user = await pool.query(`DELETE FROM public.lab_hema
-        WHERE hema_id=$1;
+        const user = await pool.query(`DELETE FROM public.lab_fecalycis
+        WHERE feacal_id=$1;
         `, [req.params.id]);
 
         res.send(user.rows)
@@ -383,5 +383,81 @@ router.delete("/delete-hema/:id", async (req, res) => {
         return res.status(405).json(error.message)
     }
 });
+////////////////////////////////////////////////////////////
+router.post("/add-clinical/", async (req, res) => {
+    const {
+        patient_id, req_physician, med_tech, pathologist, glucose, uric_acid, creatinine, total_cholesterol, triglycerides, hdl, ldl, alt
+    } = req.body;
+    try {
+        const user = await pool.query(`INSERT INTO public.lab_clinical(
+            patient_id, req_physician, med_tech, pathologist, glucose, uric_acid, creatinine, total_cholesterol, triglycerides, hdl, ldl, alt)
+               VALUES ($1,$2,$3,$4, $5,$6,$7,$8,$9,$10,$11,$12);
+        `, [
+            patient_id, req_physician, med_tech, pathologist, glucose, uric_acid, creatinine, total_cholesterol, triglycerides, hdl, ldl, alt
+        ]);
+
+        res.send(user.rows)
+    } catch (error) {
+        return res.status(405).json(error.message)
+    }
+});
+router.get("/get-clinical/", async (req, res) => {
+
+    try {
+        const user = await pool.query(`SELECT n.*, m.*
+        FROM public.lab_clinical m
+        LEFT OUTER JOIN public."Patient" n on n.patient_id = m.patient_id ;
+        `);
+
+        res.send(user.rows)
+    } catch (error) {
+        return res.status(405).json(error.message)
+    }
+});
+router.get("/get-clinical/:id", async (req, res) => {
+
+    try {
+        const user = await pool.query(`SELECT n.*, m.*
+        FROM public.lab_clinical m
+        LEFT OUTER JOIN public."Patient" n on n.patient_id = m.patient_id 
+        where clinical_id = $1 ;
+        `, [req.params.id]);
+
+        res.send(user.rows)
+    } catch (error) {
+        return res.status(405).json(error.message)
+    }
+});
+router.put("/edit-clinical/:id", async (req, res) => {
+    const {
+        patient_id, req_physician, med_tech, pathologist, glucose, uric_acid, creatinine, total_cholesterol, triglycerides, hdl, ldl, alt
+    } = req.body;
+    try {
+        const user = await pool.query(`UPDATE public.lab_clinical
+        SET  patient_id=$2, req_physician=$3, med_tech=$4, pathologist=$5, glucose=$6, uric_acid=$7, creatinine=$8, total_cholesterol=$9, triglycerides=$10, hdl=$11, ldl=$12, alt=$13
+        WHERE clinical_id=$1;
+        `, [req.params.id,
+            patient_id, req_physician, med_tech, pathologist, glucose, uric_acid, creatinine, total_cholesterol, triglycerides, hdl, ldl, alt
+        ]);
+
+        res.send(user.rows)
+    } catch (error) {
+        return res.status(405).json(error.message)
+    }
+});
+router.delete("/delete-clinical/:id", async (req, res) => {
+
+    try {
+        const user = await pool.query(`DELETE FROM public.lab_fecalycis
+        WHERE clinical_id=$1;
+        `, [req.params.id]);
+
+        res.send(user.rows)
+    } catch (error) {
+        return res.status(405).json(error.message)
+    }
+});
+
+
 
 module.exports = router; 
