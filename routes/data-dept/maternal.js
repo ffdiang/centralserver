@@ -52,7 +52,7 @@ router.get("/get-rec/:id", async (req, res) => {
 });
 
 
-router.put("/edit-vac/:id", async (req, res) => {
+router.put("/edit-rec/:id", async (req, res) => {
     const {
         patient_id
     } = req.body;
@@ -68,7 +68,7 @@ router.put("/edit-vac/:id", async (req, res) => {
         return res.status(405).json(error.message)
     }
 });
-router.delete("/delete-vac/:id", async (req, res) => {
+router.delete("/delete-rec/:id", async (req, res) => {
 
     try {
         const user = await pool.query(`DELETE FROM public.maternal_records
