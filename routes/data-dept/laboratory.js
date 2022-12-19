@@ -153,7 +153,7 @@ router.delete("/delete-urinal/:id", async (req, res) => {
 
     try {
         const user = await pool.query(`DELETE FROM public.lab_urinal
-        WHERE req_id=$1;
+        WHERE urinal_id=$1;
         `, [req.params.id]);
 
         res.send(user.rows)
@@ -374,7 +374,7 @@ router.put("/edit-clinical/:id", async (req, res) => {
 router.delete("/delete-clinical/:id", async (req, res) => {
 
     try {
-        const user = await pool.query(`DELETE FROM public.lab_fecalycis
+        const user = await pool.query(`DELETE FROM public.lab_clinical
         WHERE clinical_id=$1;
         `, [req.params.id]);
 
