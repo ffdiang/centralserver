@@ -49,12 +49,7 @@ router.get("/get-map-data/:id", async (req, res) => {
         GROUP BY
        "District"
        ORDER BY "District"`, [req.params.id]);
-        const top = await pool.query(`SELECT  "District", COUNT("Disease")
-        FROM public."Disease_records"
-        where "Disease" =$1
-        GROUP BY
-       "District"
-       ORDER BY "District"`, [req.params.id]);
+
 
         iso.rows.map((value, index) => {
             all.rows.map((value1, index1) => {
@@ -106,5 +101,22 @@ router.get("/districts/", async (req, res) => {
     }
 
 });
+router.get("/all-chart-data/", async (req, res) => {
 
+    try {
+        const patient = await pool.query(`SELECT  d.district_name, COUNT("Disease")
+        FROM public."Disease_records" r
+        LEFT OUTER JOIN public."District" d on r."District" = d.district_id
+        GROUP BY
+        "District",
+       d.district_name
+       ORDER BY "District",d.district_name
+        `);
+
+        res.json(patient.rows)
+    } catch (error) {
+        return res.status(405).json("Error")
+    }
+
+});
 module.exports = router; 
