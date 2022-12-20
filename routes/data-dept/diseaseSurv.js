@@ -101,6 +101,20 @@ router.get("/districts/", async (req, res) => {
     }
 
 });
+router.get("/districts/:id", async (req, res) => {
+
+    try {
+        const patient = await pool.query(`SELECT * FROM public."District"
+        where district_id =$1
+        ORDER BY district_id ASC 
+        `, [req.params.id]);
+
+        res.json(patient.rows)
+    } catch (error) {
+        return res.status(405).json("Error")
+    }
+
+});
 router.get("/all-chart-data/", async (req, res) => {
 
     try {
@@ -131,7 +145,7 @@ router.get("/disease-dist/:id", async (req, res) => {
         where "District" = $1
         group by 
         i.disease_desc
-        `,[req.params.id]);
+        `, [req.params.id]);
 
         res.json(patient.rows)
     } catch (error) {
