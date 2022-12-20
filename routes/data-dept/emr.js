@@ -42,6 +42,58 @@ router.post("/add-patient", async (req, res) => {
 
 
 });
+router.put("/edit-patient/:id", async (req, res) => {
+    const {
+        first_name,
+        last_name,
+        birth_date,
+        sex,
+        mother_name,
+        father_name,
+        contact_number,
+        email,
+        address_line1,
+        address_line2,
+        city,
+        district,
+        barangay
+    } = req.body;
+    try {
+        const user = await pool.query(`UPDATE public."Patient"
+        SET patient_id=$2, first_name=$3, last_name=$4, sex=$5, mother_name=$6, father_name=$7, contact_number=$8, email=$9, birth_date=$10
+        WHERE patient_id=$1;
+        `, [req.params.id,
+            first_name,
+            last_name,
+            birth_date,
+            sex,
+            mother_name,
+            father_name,
+            contact_number,
+            email
+        ]);
+        const add = await pool.query(`UPDATE public."Address"
+            SET address_id=$1, patient_id=$2, address_line1=$3, address_line2=$4, city=$5, district=$6, barangay=$7
+            WHERE patient_id=$1;
+            `, [req.params.id,
+            address_line1,
+            address_line2,
+            city,
+            district,
+            barangay
+        ]);
+
+
+
+
+
+        res.send(user.rows)
+    } catch (error) {
+        return res.status(405).json(error.message)
+    }
+});
+
+
 router.get("/patient/:id", async (req, res) => {
 
     try {
@@ -58,7 +110,7 @@ router.get("/patient/:id", async (req, res) => {
         return res.status(405).json("Error")
     }
 
-    
+
 
 });
 
