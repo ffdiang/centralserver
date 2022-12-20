@@ -123,7 +123,7 @@ router.get("/all-chart-data/", async (req, res) => {
 router.get("/disease-dist/:id", async (req, res) => {
 
     try {
-        const patient = await pool.query(`SELECT  i.disease_desc, sum("Disease")
+        const patient = await pool.query(`SELECT  i.disease_desc, count("Disease")
 
         FROM public."Disease_records" r
         LEFT OUTER JOIN public."District" d on r."District" = d.district_id
