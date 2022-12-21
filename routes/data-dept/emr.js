@@ -160,5 +160,21 @@ router.get("/patients/", async (req, res) => {
 
 
 });
+router.get("/diagnosis/:id", async (req, res) => {
 
+    try {
+        const patient = await pool.query(`SELECT disease_rec1,  a.disease_desc
+        FROM public."Disease_records" r
+        LEFT OUTER JOIN public."Diseases" a on a.disease_id=r."Disease"
+        where disease_rec1 = $1
+        `, [req.params.id]);
+
+        res.json(patient.rows)
+    } catch (error) {
+        return res.status(405).json(error.message)
+    }
+
+
+
+});
 module.exports = router; 
